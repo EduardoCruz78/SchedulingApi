@@ -19,6 +19,7 @@ env:
 
 jobs:
   build-and-test:
+    name: Build and test
     runs-on: ubuntu-latest
     timeout-minutes: 20
 
@@ -41,3 +42,41 @@ jobs:
       # Ubuntu runners ship with Docker, so Testcontainers-based integration tests run here.
       - name: Test
         run: dotnet test --solution Scheduling.slnx --no-build -c Release
+
+  docker:
+    name: Docker image and smoke test
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    needs: build-and-test
+
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Build image
+        run: docker build --tag scheduling-api:ci .
+
+      # Starts the real image with PostgreSQL, lets it migrate and seed, then calls it over HTTP.
+      - name: Smoke test with docker compose
+        env:
+          JWT_SECRET: ci-smoke-test-secret-0123456789abcdefghij
+        run: |
+          docker compose up --detach --build
+          for attempt in $(seq 1 30); do
+            if curl --silent --fail http://localhost:8080/health; then echo; break; fi
+            sleep 2
+          done
+          curl --silent --fail http://localhost:8080/health | grep -q Healthy
+          curl --silent --fail http://localhost:8080/openapi/v1.json > /dev/null
+          curl --silent --fail -X POST http://localhost:8080/api/auth/login \
+            -H "Content-Type: application/json" \
+            -d '{"email":"admin@scheduling.demo","password":"Admin123!"}' | grep -q accessToken
+          curl --silent --fail "http://localhost:8080/api/services" | grep -q Haircut
+          echo "Smoke test passed"
+
+      - name: Container logs
+        if: always()
+        run: docker compose logs api
+
+      - name: Tear down
+        if: always()
+        run: docker compose down --volumes

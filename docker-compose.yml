@@ -1,4 +1,5 @@
-# Local development stack. Credentials below are for a throwaway local container only.
+# Local stack: `docker compose up --build`, then open http://localhost:8080/scalar
+# Credentials below are for throwaway local containers only, never for a real deployment.
 services:
   db:
     image: postgres:17-alpine
@@ -16,6 +17,20 @@ services:
       interval: 5s
       timeout: 3s
       retries: 10
+
+  api:
+    build: .
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      # Development: applies migrations and seeds demo data on startup (appsettings.Development.json).
+      ASPNETCORE_ENVIRONMENT: Development
+      ConnectionStrings__Default: "Host=db;Port=5432;Database=scheduling;Username=scheduling;Password=scheduling"
+      # Override with a real secret through the JWT_SECRET environment variable.
+      Jwt__Secret: "${JWT_SECRET:-local-development-only-secret-change-me-0123456789}"
+    ports:
+      - "8080:8080"
 
 volumes:
   pgdata:
