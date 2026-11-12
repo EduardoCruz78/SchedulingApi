@@ -26,8 +26,13 @@ public static class DependencyInjection
 {
     public static IServiceCollection AddInfrastructure(this IServiceCollection services, IConfiguration configuration)
     {
-        var connectionString = configuration.GetConnectionString("Default")
-            ?? throw new InvalidOperationException("Connection string 'Default' is not configured.");
+        var configured = configuration.GetConnectionString("Default");
+        if (string.IsNullOrWhiteSpace(configured))
+        {
+            throw new InvalidOperationException("Connection string 'Default' is not configured (ConnectionStrings__Default).");
+        }
+
+        var connectionString = ConnectionStrings.Normalize(configured);
 
         services.AddDbContext<SchedulingDbContext>(options => SchedulingDbContext.Configure(options, connectionString));
 
