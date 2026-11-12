@@ -96,12 +96,28 @@ public abstract class ApiTest(DatabaseFixture database) : DatabaseTest(database)
         return client;
     }
 
-    protected static async Task AuthenticateAsync(HttpClient client, string email, string password)
+    private readonly Dictionary<HttpClient, (string Email, string Password)> _credentials = [];
+
+    protected async Task AuthenticateAsync(HttpClient client, string email, string password)
     {
         var login = await client.PostAsJsonAsync("/api/auth/login", new { email, password }, Json, Ct);
         login.EnsureSuccessStatusCode();
         var token = await login.Content.ReadFromJsonAsync<AccessToken>(Json, Ct);
         client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token!.Token);
+        _credentials[client] = (email, password);
+    }
+
+    /// <summary>
+    /// Moves the API clock and logs every authenticated client in again:
+    /// tokens expire after an hour of (fake) time, exactly as they would in production.
+    /// </summary>
+    protected async Task TravelToAsync(DateTimeOffset instant)
+    {
+        Clock.SetUtcNow(instant);
+        foreach (var (client, (email, password)) in _credentials.ToList())
+        {
+            await AuthenticateAsync(client, email, password);
+        }
     }
 
     protected static async Task<T> ReadAsync<T>(HttpResponseMessage response) =>

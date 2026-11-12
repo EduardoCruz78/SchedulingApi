@@ -17,6 +17,7 @@ public static class DependencyInjection
             services.AddScoped(handler);
         }
 
+        services.AddScoped<Appointments.AppointmentContext>();
         services.AddValidatorsFromAssembly(ApplicationAssembly.Instance, includeInternalTypes: true);
         return services;
     }
