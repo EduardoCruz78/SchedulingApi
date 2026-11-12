@@ -34,7 +34,15 @@ csharp_style_prefer_primary_constructors = true:suggestion
 csharp_prefer_braces = when_multiline:suggestion
 dotnet_style_prefer_collection_expression = when_types_loosely_match:suggestion
 
-# Naming: private fields _camelCase
+# Naming: private static readonly fields and constants are PascalCase; other private fields _camelCase
+dotnet_naming_rule.private_static_readonly_pascal.symbols = private_static_readonly_fields
+dotnet_naming_rule.private_static_readonly_pascal.style = pascal_case
+dotnet_naming_rule.private_static_readonly_pascal.severity = warning
+dotnet_naming_symbols.private_static_readonly_fields.applicable_kinds = field
+dotnet_naming_symbols.private_static_readonly_fields.applicable_accessibilities = private
+dotnet_naming_symbols.private_static_readonly_fields.required_modifiers = static, readonly
+dotnet_naming_style.pascal_case.capitalization = pascal_case
+
 dotnet_naming_rule.private_fields_underscore.symbols = private_fields
 dotnet_naming_rule.private_fields_underscore.style = underscore_camel
 dotnet_naming_rule.private_fields_underscore.severity = warning
@@ -48,6 +56,8 @@ dotnet_naming_style.underscore_camel.required_prefix = _
 dotnet_diagnostic.CA1848.severity = none
 # CA2007: ConfigureAwait is irrelevant in ASP.NET Core (no SynchronizationContext).
 dotnet_diagnostic.CA2007.severity = none
+# CA1716: "Error" is a VB keyword; this codebase is C#-only and Error is the clearest name.
+dotnet_diagnostic.CA1716.severity = none
 # CA1062: nullable reference types already cover argument null checks.
 dotnet_diagnostic.CA1062.severity = none
 
