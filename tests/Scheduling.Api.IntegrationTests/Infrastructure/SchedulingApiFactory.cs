@@ -102,8 +102,8 @@ public abstract class ApiTest(DatabaseFixture database) : DatabaseTest(database)
     {
         var login = await client.PostAsJsonAsync("/api/auth/login", new { email, password }, Json, Ct);
         login.EnsureSuccessStatusCode();
-        var token = await login.Content.ReadFromJsonAsync<AccessToken>(Json, Ct);
-        client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token!.Token);
+        var token = await login.Content.ReadFromJsonAsync<AuthToken>(Json, Ct);
+        client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token!.AccessToken);
         _credentials[client] = (email, password);
     }
 

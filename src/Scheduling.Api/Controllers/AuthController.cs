@@ -33,11 +33,11 @@ public sealed class AuthController : ApiController
     [HttpPost("login")]
     [AllowAnonymous]
     [EnableRateLimiting(Policies.AuthRateLimit)]
-    [ProducesResponseType<AccessToken>(StatusCodes.Status200OK)]
+    [ProducesResponseType<AuthToken>(StatusCodes.Status200OK)]
     [ProducesResponseType<ValidationProblemDetails>(StatusCodes.Status400BadRequest)]
     [ProducesResponseType<ProblemDetails>(StatusCodes.Status401Unauthorized)]
     [ProducesResponseType<ProblemDetails>(StatusCodes.Status429TooManyRequests)]
-    public async Task<ActionResult<AccessToken>> Login(
+    public async Task<ActionResult<AuthToken>> Login(
         LoginRequest request, [FromServices] LoginHandler handler, CancellationToken cancellationToken) =>
         OkOrProblem(await handler.HandleAsync(request.ToCommand(), cancellationToken));
 

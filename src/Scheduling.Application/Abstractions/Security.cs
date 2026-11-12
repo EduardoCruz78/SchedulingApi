@@ -9,9 +9,9 @@ public interface IPasswordHasher
     bool Verify(string hashedPassword, string providedPassword);
 }
 
-public sealed record AccessToken(string Token, DateTimeOffset ExpiresAt);
+public sealed record AuthToken(string AccessToken, DateTimeOffset ExpiresAt);
 
 public interface ITokenService
 {
-    AccessToken CreateAccessToken(User user);
+    AuthToken CreateAccessToken(User user);
 }

@@ -105,7 +105,7 @@ public sealed class LoginHandler(
 {
     private readonly Lazy<string> _dummyHash = new(() => passwordHasher.Hash("dummy-password-for-timing"));
 
-    public async Task<Result<AccessToken>> HandleAsync(LoginCommand command, CancellationToken cancellationToken = default)
+    public async Task<Result<AuthToken>> HandleAsync(LoginCommand command, CancellationToken cancellationToken = default)
     {
         if (await validator.ValidateToErrorAsync(command, cancellationToken) is { } invalid)
         {

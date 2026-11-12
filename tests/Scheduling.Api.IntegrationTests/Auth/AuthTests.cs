@@ -58,8 +58,8 @@ public class AuthTests(DatabaseFixture database) : ApiTest(database)
         var response = await client.PostAsJsonAsync("/api/auth/login", new { email = "maria@test.local", password = "Password123" }, Json, Ct);
 
         response.StatusCode.Should().Be(HttpStatusCode.OK);
-        var token = await ReadAsync<AccessToken>(response);
-        token.Token.Should().NotBeNullOrWhiteSpace();
+        var token = await ReadAsync<AuthToken>(response);
+        token.AccessToken.Should().NotBeNullOrWhiteSpace();
         token.ExpiresAt.Should().Be(Clock.GetUtcNow().AddHours(1));
     }
 

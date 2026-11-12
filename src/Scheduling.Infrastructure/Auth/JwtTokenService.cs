@@ -43,7 +43,7 @@ internal sealed class JwtTokenService(IOptions<JwtOptions> options, TimeProvider
 {
     private readonly JsonWebTokenHandler _handler = new();
 
-    public AccessToken CreateAccessToken(User user)
+    public AuthToken CreateAccessToken(User user)
     {
         var settings = options.Value;
         var now = timeProvider.GetUtcNow();
@@ -67,6 +67,6 @@ internal sealed class JwtTokenService(IOptions<JwtOptions> options, TimeProvider
             ]),
         };
 
-        return new AccessToken(_handler.CreateToken(descriptor), expiresAt);
+        return new AuthToken(_handler.CreateToken(descriptor), expiresAt);
     }
 }
