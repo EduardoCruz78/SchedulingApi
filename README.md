@@ -117,13 +117,13 @@ dotnet run --project src/Scheduling.Api
 dotnet test
 ```
 
-<!-- TEST-COUNT -->
+**193 tests**, all run in CI on every push.
 
-| Project | What it covers |
-|---|---|
-| `Scheduling.Domain.UnitTests` | Invariants and state transitions of every aggregate |
-| `Scheduling.Application.UnitTests` | Availability algorithm (split shifts, time off, lead time, DST) and use cases with hand-written fakes |
-| `Scheduling.Api.IntegrationTests` | Every endpoint and status code over HTTP, migrations from scratch, the exclusion constraint, optimistic concurrency, JWT expiry, rate limiting and the 10-way concurrent booking race |
+| Project | Tests | What it covers |
+|---|---|---|
+| `Scheduling.Domain.UnitTests` | 61 | Invariants and state transitions of every aggregate |
+| `Scheduling.Application.UnitTests` | 52 | Availability algorithm (split shifts, time off, lead time, DST) and use cases with hand-written fakes |
+| `Scheduling.Api.IntegrationTests` | 80 | Every endpoint and status code over HTTP, migrations from scratch, the exclusion constraint, optimistic concurrency, JWT expiry, rate limiting and the 10-way concurrent booking race |
 
 Integration tests start a real PostgreSQL 17 with Testcontainers (Docker required). To use an existing server instead, set `SCHEDULING_TEST_DB` to a connection string for an **empty, dedicated** database (tests truncate every table).
 
