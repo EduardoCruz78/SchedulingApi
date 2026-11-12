@@ -23,9 +23,20 @@ public enum ErrorType
 }
 
 /// <summary>An expected failure with a stable machine-readable code.</summary>
-public sealed record Error(string Code, string Message, ErrorType Type)
+/// <param name="Code">Stable identifier clients can switch on, e.g. "Appointment.SlotTaken".</param>
+/// <param name="Message">Human-readable explanation.</param>
+/// <param name="Type">Category, mapped to an HTTP status code by the API.</param>
+/// <param name="Fields">Per-field messages for validation errors, keyed by field name.</param>
+public sealed record Error(
+    string Code,
+    string Message,
+    ErrorType Type,
+    IReadOnlyDictionary<string, string[]>? Fields = null)
 {
     public static Error Validation(string code, string message) => new(code, message, ErrorType.Validation);
+
+    public static Error Validation(IReadOnlyDictionary<string, string[]> fields) =>
+        new("Validation.Failed", "One or more fields are invalid.", ErrorType.Validation, fields);
 
     public static Error NotFound(string code, string message) => new(code, message, ErrorType.NotFound);
 
