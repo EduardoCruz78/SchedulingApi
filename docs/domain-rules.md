@@ -16,6 +16,7 @@ Every business rule has an id (R1, R2...). Tests reference these ids in comments
 | R10 | `Scheduled → Cancelled / Completed / NoShow`. `Completed` and `NoShow` only after the start. Final states never change. | Domain | `Appointment.InvalidTransition`, `Appointment.NotStartedYet` | 422 |
 | R11 | A day's working intervals need `Start < End` and cannot overlap each other. | Domain (`Professional.SetWorkingHours`) | `Professional.InvalidWorkingHoursInterval`, `Professional.OverlappingWorkingHours` | 400 |
 | R12 | A deactivated service leaves the public catalog, but past appointments stay valid. | Application | - | - |
+| R13 | Time off cannot be added over non-cancelled appointments: they must be cancelled or moved first. | Application (`AddTimeOff`) | `Professional.TimeOffConflictsWithAppointments` | 409 |
 
 ## Conventions
 
