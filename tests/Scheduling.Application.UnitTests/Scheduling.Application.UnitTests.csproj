@@ -1,0 +1,8 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\Scheduling.Application\Scheduling.Application.csproj" />
+    <ProjectReference Include="..\Scheduling.Tests.Common\Scheduling.Tests.Common.csproj" />
+  </ItemGroup>
+
+</Project>

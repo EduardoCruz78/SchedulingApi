@@ -1,0 +1,9 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!-- The domain has no dependencies: no EF Core, no ASP.NET Core, no NuGet packages. -->
+
+  <ItemGroup>
+    <InternalsVisibleTo Include="Scheduling.Domain.UnitTests" />
+  </ItemGroup>
+
+</Project>
