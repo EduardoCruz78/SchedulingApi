@@ -4,11 +4,16 @@
 ![.NET 10](https://img.shields.io/badge/.NET-10_LTS-512BD4?logo=dotnet)
 ![PostgreSQL 17](https://img.shields.io/badge/PostgreSQL-17-4169E1?logo=postgresql&logoColor=white)
 ![License: MIT](https://img.shields.io/badge/license-MIT-green)
+[![Live demo](https://img.shields.io/badge/demo-live-46E3B7?logo=render&logoColor=white)](https://scheduling-api-gf47.onrender.com/scalar)
 
 REST API for appointment booking in small businesses (barbershops, salons, clinics, studios), built with **ASP.NET Core 10, EF Core and PostgreSQL**.
 It is not a CRUD: it computes free slots from working hours, time off and existing bookings, and **prevents double booking at the database level**, even under concurrent requests.
 
-<!-- DEMO-LINK -->
+**Live demo:** <https://scheduling-api-gf47.onrender.com/scalar> (interactive API docs; demo credentials [below](#running-locally)).
+
+> Hosted on Render's free plan: after 15 minutes without traffic the service sleeps, so the first request can take about 50 seconds. The database is PostgreSQL 17 on Neon.
+
+![Scalar API reference of the live demo](docs/images/scalar.png)
 
 ## Features
 
@@ -173,6 +178,8 @@ Plus `GET /health` (database check), `GET /openapi/v1.json` and `GET /scalar`.
 - Tem 13 regras de negócio documentadas, autenticação JWT com papéis (Admin e Cliente), rate limiting e erros padronizados (ProblemDetails).
 - Segue Clean Architecture e DDD, com testes unitários e de integração com PostgreSQL real (Testcontainers), Docker e CI no GitHub Actions.
 
-Para rodar: `docker compose up --build` e abrir <http://localhost:8080/scalar>.
+Demo online: <https://scheduling-api-gf47.onrender.com/scalar> (plano gratuito: a primeira requisição depois de um tempo parado pode levar uns 50 segundos).
+
+Para rodar localmente: `docker compose up --build` e abrir <http://localhost:8080/scalar>.
 
 </details>
