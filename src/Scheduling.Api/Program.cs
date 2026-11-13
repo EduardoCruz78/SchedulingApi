@@ -32,6 +32,14 @@ builder.Services
     .AddControllers()
     .AddJsonOptions(o => o.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter()));
 
+// The OpenAPI generator reads these options, not the MVC ones above. Mirror the wire format here so the
+// document says "Scheduled" (not 0) and "number" (not number-or-string): clients generate types from it.
+builder.Services.ConfigureHttpJsonOptions(o =>
+{
+    o.SerializerOptions.Converters.Add(new JsonStringEnumConverter());
+    o.SerializerOptions.NumberHandling = JsonNumberHandling.Strict;
+});
+
 builder.Services.AddProblemDetails();
 builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
 
