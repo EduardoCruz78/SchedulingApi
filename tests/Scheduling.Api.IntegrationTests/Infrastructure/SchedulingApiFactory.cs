@@ -18,7 +18,10 @@ using Scheduling.Tests.Common;
 namespace Scheduling.Api.IntegrationTests.Infrastructure;
 
 /// <summary>Runs the real API in memory against the test database, with a controllable clock.</summary>
-public sealed class SchedulingApiFactory(DatabaseFixture database, IReadOnlyDictionary<string, string>? settings = null)
+public sealed class SchedulingApiFactory(
+    DatabaseFixture database,
+    IReadOnlyDictionary<string, string>? settings = null,
+    Action<IServiceCollection>? configureServices = null)
     : WebApplicationFactory<Program>
 {
     public FakeTimeProvider Clock { get; } = new(TestTime.Now);
@@ -41,6 +44,7 @@ public sealed class SchedulingApiFactory(DatabaseFixture database, IReadOnlyDict
         {
             services.RemoveAll<TimeProvider>();
             services.AddSingleton<TimeProvider>(Clock);
+            configureServices?.Invoke(services);
         });
     }
 }
