@@ -11,6 +11,8 @@ It is not a CRUD: it computes free slots from working hours, time off and existi
 
 **Live demo:** <https://scheduling-api-gf47.onrender.com/scalar> (interactive API docs; demo credentials [below](#running-locally)).
 
+**Admin dashboard:** [SchedulingDashboard](https://github.com/EduardoCruz78/SchedulingDashboard) (portfolio project 3, Next.js), live at <https://scheduling-dashboard-brown.vercel.app>. It signs in with the same demo admin, manages the schedule and the catalog through this API, and shows the signed webhooks that this API's bookings produce through the [WebhookRelay](https://github.com/EduardoCruz78/WebhookRelay).
+
 > Hosted on Render's free plan: after 15 minutes without traffic the service sleeps, so the first request can take about 50 seconds. The database is PostgreSQL 17 on Neon.
 
 ![Scalar API reference of the live demo](docs/images/scalar.png)
@@ -165,7 +167,6 @@ Plus `GET /health` (database check), `GET /openapi/v1.json` and `GET /scalar`.
 
 - **Multi-tenancy**: a `tenant_id` on every table (and in the exclusion constraint), the time zone moved onto the tenant, tenant resolved from the token.
 - Delete processed outbox rows after a retention period.
-- **Admin dashboard** in Next.js (portfolio project 3), consuming this API (CORS is already configurable).
 - Migration bundle in the deployment pipeline instead of migrating on startup.
 
 ## License
@@ -182,7 +183,7 @@ Plus `GET /health` (database check), `GET /openapi/v1.json` and `GET /scalar`.
 - Tem 13 regras de negócio documentadas, autenticação JWT com papéis (Admin e Cliente), rate limiting e erros padronizados (ProblemDetails).
 - Segue Clean Architecture e DDD, com testes unitários e de integração com PostgreSQL real (Testcontainers), Docker e CI no GitHub Actions.
 
-Demo online: <https://scheduling-api-gf47.onrender.com/scalar>, que publica os eventos de agendamento na [demo do WebhookRelay](https://webhook-relay-1odf.onrender.com/docs) (plano gratuito: a primeira requisição depois de um tempo parado pode levar uns 50 segundos).
+Demo online: <https://scheduling-api-gf47.onrender.com/scalar>, que publica os eventos de agendamento na [demo do WebhookRelay](https://webhook-relay-1odf.onrender.com/docs) (plano gratuito: a primeira requisição depois de um tempo parado pode levar uns 50 segundos). O painel administrativo ([SchedulingDashboard](https://github.com/EduardoCruz78/SchedulingDashboard), projeto 3) está em <https://scheduling-dashboard-brown.vercel.app>.
 
 Para rodar localmente: `docker compose up --build` e abrir <http://localhost:8080/scalar>.
 
