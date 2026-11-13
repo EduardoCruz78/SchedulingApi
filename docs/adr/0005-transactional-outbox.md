@@ -6,7 +6,7 @@
 ## Context
 
 Other systems need to know when an appointment is booked or cancelled (notifications through
-WebhookRelay, portfolio project 2; the admin dashboard). The obvious
+[WebhookRelay](https://github.com/EduardoCruz78/WebhookRelay), portfolio project 2; the admin dashboard). The obvious
 implementation, calling WebhookRelay from the handler right after `SaveChanges`, is a **dual write**:
 two systems updated without a shared transaction.
 

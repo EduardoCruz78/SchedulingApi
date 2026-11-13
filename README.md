@@ -77,7 +77,7 @@ ALTER TABLE appointments ADD CONSTRAINT ex_appointments_professional_overlap
 
 The application still checks first (friendly error in the common case); a `23P01` from PostgreSQL becomes the same `409 Appointment.SlotTaken`.
 
-**Transactional Outbox** ([ADR 0005](docs/adr/0005-transactional-outbox.md)). Booking and cancelling raise domain events; the unit of work stores them in `outbox_messages` in the **same transaction** as the appointment. A background dispatcher publishes them to *WebhookRelay* (portfolio project 2, an event delivery service) (`appointment.created`, `appointment.cancelled`), claiming rows with `FOR UPDATE SKIP LOCKED` so several instances can run it. If the relay is down, events wait in the table; if a send is repeated, the relay deduplicates it by id. No event is lost and none is published for an appointment that was rolled back.
+**Transactional Outbox** ([ADR 0005](docs/adr/0005-transactional-outbox.md)). Booking and cancelling raise domain events; the unit of work stores them in `outbox_messages` in the **same transaction** as the appointment. A background dispatcher publishes them to [WebhookRelay](https://github.com/EduardoCruz78/WebhookRelay) (portfolio project 2, an event delivery service) (`appointment.created`, `appointment.cancelled`), claiming rows with `FOR UPDATE SKIP LOCKED` so several instances can run it. If the relay is down, events wait in the table; if a send is repeated, the relay deduplicates it by id. No event is lost and none is published for an appointment that was rolled back.
 
 **Availability as a pure function.** `AvailabilityCalculator` takes the professional, service, date, bookings, "now" and time zone, and returns UTC slots. No database, no clock, so every scenario is a millisecond unit test, including daylight saving transitions.
 
@@ -132,7 +132,7 @@ dotnet test
 |---|---|---|
 | `Scheduling.Domain.UnitTests` | 67 | Invariants, state transitions and domain events of every aggregate |
 | `Scheduling.Application.UnitTests` | 52 | Availability algorithm (split shifts, time off, lead time, DST) and use cases with hand-written fakes |
-| `Scheduling.Api.IntegrationTests` | 101 | Every endpoint and status code over HTTP, migrations from scratch, the exclusion constraint, optimistic concurrency, JWT expiry, rate limiting, the 10-way concurrent booking race, the outbox (atomic writes, publishing, relay outages, concurrent dispatchers) and the webhook signature contract with WebhookRelay |
+| `Scheduling.Api.IntegrationTests` | 101 | Every endpoint and status code over HTTP, migrations from scratch, the exclusion constraint, optimistic concurrency, JWT expiry, rate limiting, the 10-way concurrent booking race, the outbox (atomic writes, publishing, relay outages, concurrent dispatchers) and the webhook signature contract with [WebhookRelay](https://github.com/EduardoCruz78/WebhookRelay/blob/main/docs/webhook-signature.md) |
 
 Integration tests start a real PostgreSQL 17 with Testcontainers (Docker required). To use an existing server instead, set `SCHEDULING_TEST_DB` to a connection string for an **empty, dedicated** database (tests truncate every table).
 
