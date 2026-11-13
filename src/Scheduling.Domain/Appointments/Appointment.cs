@@ -100,7 +100,7 @@ public sealed class Appointment : AggregateRoot
         // R8
         var endsAt = startsAt + service.Duration;
 
-        return new Appointment(
+        var appointment = new Appointment(
             Guid.CreateVersion7(),
             customerId,
             professionalId,
@@ -109,6 +109,10 @@ public sealed class Appointment : AggregateRoot
             endsAt,
             service.Price,
             now);
+
+        appointment.Raise(new AppointmentBooked(
+            appointment.Id, customerId, professionalId, service.Id, startsAt, endsAt, service.Price, now));
+        return appointment;
     }
 
     /// <summary>R9: the customer can cancel up to the window before the start; an admin can cancel any time.</summary>
@@ -135,6 +139,7 @@ public sealed class Appointment : AggregateRoot
         Status = AppointmentStatus.Cancelled;
         CancelledAt = now;
         CancellationReason = reason;
+        Raise(new AppointmentCancelled(Id, CustomerId, ProfessionalId, StartsAt, byAdmin, reason, now));
         return Result.Success();
     }
 

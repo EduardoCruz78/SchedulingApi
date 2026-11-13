@@ -4,6 +4,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using Scheduling.Application.Abstractions;
 using Scheduling.Infrastructure.Auth;
+using Scheduling.Infrastructure.Outbox;
 using Scheduling.Infrastructure.Persistence;
 using Scheduling.Infrastructure.Persistence.Repositories;
 using Scheduling.Infrastructure.Persistence.Seed;
@@ -54,7 +55,29 @@ public static class DependencyInjection
 
         services.AddHealthChecks().AddDbContextCheck<SchedulingDbContext>("database");
 
+        AddOutbox(services, configuration);
+
         return services;
+    }
+
+    /// <summary>
+    /// Transactional Outbox (ADR 0005). Messages are always written; the dispatcher that publishes
+    /// them to WebhookRelay runs only when Outbox:RelayUrl and Outbox:ApiKey are configured.
+    /// </summary>
+    private static void AddOutbox(IServiceCollection services, IConfiguration configuration)
+    {
+        var section = configuration.GetSection(OutboxOptions.SectionName);
+        services.AddOptions<OutboxOptions>().Bind(section).ValidateDataAnnotations().ValidateOnStart();
+
+        var outbox = section.Get<OutboxOptions>() ?? new OutboxOptions();
+        services.AddHttpClient<WebhookRelayClient>(client =>
+            client.Timeout = TimeSpan.FromSeconds(outbox.RequestTimeoutSeconds));
+        services.AddScoped<OutboxProcessor>();
+
+        if (outbox.Enabled)
+        {
+            services.AddHostedService<OutboxDispatcher>();
+        }
     }
 
     /// <summary>Runs migrations and seeding according to <see cref="DatabaseOptions"/>.</summary>

@@ -51,7 +51,7 @@ public sealed class DatabaseFixture : IAsyncLifetime
     {
         await using var db = CreateDbContext();
         await db.Database.ExecuteSqlRawAsync(
-            "TRUNCATE appointments, time_offs, professional_services, professional_working_hours, professionals, services, users CASCADE;");
+            "TRUNCATE outbox_messages, appointments, time_offs, professional_services, professional_working_hours, professionals, services, users CASCADE;");
     }
 
     public async ValueTask DisposeAsync()

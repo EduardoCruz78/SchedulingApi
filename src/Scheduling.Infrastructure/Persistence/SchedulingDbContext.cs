@@ -5,6 +5,7 @@ using Scheduling.Domain.Appointments;
 using Scheduling.Domain.Professionals;
 using Scheduling.Domain.Services;
 using Scheduling.Domain.Users;
+using Scheduling.Infrastructure.Outbox;
 
 namespace Scheduling.Infrastructure.Persistence;
 
@@ -17,6 +18,8 @@ public sealed class SchedulingDbContext(DbContextOptions<SchedulingDbContext> op
     public DbSet<Professional> Professionals => Set<Professional>();
 
     public DbSet<Appointment> Appointments => Set<Appointment>();
+
+    public DbSet<OutboxMessage> OutboxMessages => Set<OutboxMessage>();
 
     /// <summary>Single place for provider options, shared by DI and the design-time factory.</summary>
     public static void Configure(DbContextOptionsBuilder builder, string connectionString) =>
